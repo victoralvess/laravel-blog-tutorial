@@ -12,6 +12,7 @@
     		{{Form::textarea('body', $post->body, ['id' => 'article-ckeditor', 'class' => 'form-control', 'placeholder' => 'Body',])}}
     	</div>
         {{Form::hidden('_method', 'PUT')}}
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
     	{{Form::submit('Submit', ['class'=>'btn btn-primary'])}}
 	{!! Form::close() !!}
 @endsection
