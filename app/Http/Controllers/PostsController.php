@@ -8,6 +8,16 @@ use Illuminate\Support\Facades\DB;
 
 class PostsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth', [
+            'except' => [
+                'index',
+                'show'
+            ]
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -79,6 +89,10 @@ class PostsController extends Controller
      */
     public function edit(Post $post)
     {
+        if(!$this->checkAuthor($post)) {
+            return redirect('/posts')->with('error', 'Unauthorized Page');
+        }
+
         return view('posts.edit')->with('post', $post);
     }
 
@@ -111,8 +125,16 @@ class PostsController extends Controller
      */
     public function destroy(Post $post)
     {
+        if(!$this->checkAuthor($post)) {
+            return redirect('/posts')->with('error', 'Unauthorized Page');
+        }
+
         $post->delete();
 
         return redirect('/posts')->with('success', 'Post Removed');
+    }
+
+    public function checkAuthor(Post $post) {
+        return (auth()->user()->id === $post->user_id);
     }
 }
